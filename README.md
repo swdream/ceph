@@ -25,35 +25,35 @@ Mô hình bao gồm một ceph mon và hai ceph OSD.
 
 ### 2. Vai trò của từng node trong mô hình.
 ##### 2.1. Ceph-mon.
-    Ceph-mon là viết tắt của Ceph monitor.
-    Monitor (MON) là một lightweight Daemon xử lý tất cả các mối liên quan
-    giữa các external app và các clients.
-    Ceph mon quản lý các maps khác nhau trong hệ thống như CRUSH map, MON map...
-    CRUSH được các client sử dụng trong việc select các OSDs để lưu trữ các bản
-    coppy của data một cách. Việc select các OSDs này là bất kì, không xác định
-    trước. Ceph mon quản lý vị trí lưu trữ nơi các dữ liệu cần được lưu trữ và
-    duy trì đồng bộ chúng với các ceph OSDs nodes chứa chúng.
+Ceph-mon là viết tắt của Ceph monitor.
+Monitor (MON) là một lightweight Daemon xử lý tất cả các mối liên quan
+giữa các external app và các clients.
+Ceph mon quản lý các maps khác nhau trong hệ thống như CRUSH map, MON map...
+CRUSH được các client sử dụng trong việc select các OSDs để lưu trữ các bản
+coppy của data một cách. Việc select các OSDs này là bất kì, không xác định
+trước. Ceph mon quản lý vị trí lưu trữ nơi các dữ liệu cần được lưu trữ và
+duy trì đồng bộ chúng với các ceph OSDs nodes chứa chúng.
 
 ##### 2.2. Ceph-osd:
-    The storage deamon, là nơi lưu trữ các data, xử lý data replication recovery,
-    backfilling, rebalacing, cug cấp dữ liệu monitor....
-    Bạn sẽ phải chạy deamon này trên tất cả các server trong hệ thống của bạn.
-    Với mỗi OSD, bạn có thể có các hard drive disks tương ứng. Với mục đích
-    perfomance, tốt nhất là poll các hard drive disks  thành raid arrays,
-    LVM hoặc btrfs polling.
-    Chính vì thế, mỗi server của bạn sẽ có một daemond running. Theo mặc định,
-    có 3 pools sẽ được tạo ra: Data, metadata và RBD.
-    - pool(n): chứa các object, giống container trong swift.
-    - pool(v): group các disks.
-    Một Ceph Storage Cluster yêu cầu ít nhất hai OSD để hình thành
-    Active+clean state khi cluster tạo nên hai bản data copy.
-    Theo default, ceph OSD sẽ coppy data thành 2 bản, đặt trên 2 osd khác
-    nhau => hình thành một Active + clean state.
+The storage deamon, là nơi lưu trữ các data, xử lý data replication recovery,
+backfilling, rebalacing, cug cấp dữ liệu monitor....
+Bạn sẽ phải chạy deamon này trên tất cả các server trong hệ thống của bạn.
+Với mỗi OSD, bạn có thể có các hard drive disks tương ứng. Với mục đích
+perfomance, tốt nhất là poll các hard drive disks  thành raid arrays,
+LVM hoặc btrfs polling.
+Chính vì thế, mỗi server của bạn sẽ có một daemond running. Theo mặc định,
+có 3 pools sẽ được tạo ra: Data, metadata và RBD.
+- pool(n): chứa các object, giống container trong swift.
+- pool(v): group các disks.
+Một Ceph Storage Cluster yêu cầu ít nhất hai OSD để hình thành
+Active+clean state khi cluster tạo nên hai bản data copy.
+Theo default, ceph OSD sẽ coppy data thành 2 bản, đặt trên 2 osd khác
+nhau => hình thành một Active + clean state.
 
 ##### 2.3. Ceph-mds:
-    Meta-data server (MDS) là nơi chứa metadata. Các MDSs build các POSIX file
-    system trên top của các object cho các ceph clients. Tuy nhiên, nếu bạn không
-    sử dụng CEPH File System thì bạn không cần một MDS.
+Meta-data server (MDS) là nơi chứa metadata. Các MDSs build các POSIX file
+system trên top của các object cho các ceph clients. Tuy nhiên, nếu bạn không
+sử dụng CEPH File System thì bạn không cần một MDS.
 
 ### 3. Install:
 Cài đặt Ceph có hai cách chính:
