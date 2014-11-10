@@ -59,12 +59,84 @@ Mô hình bao gồm một ceph mon và hai ceph OSD.
 Cài đặt Ceph có hai cách chính:
 - cài qua một Ceph-deploy.
 - Cài manual.
-Trong bài viết này, tôi cài manual hệ thống.
+    Trong bài viết này, tôi cài manual hệ thống. Ceph-mon được cài đặt trên Ceph-mon,
+    hai ceph osd caì trên ceph-osd1, ceph-osd2
 ===
 Trên tất cả các nodes:
 ```
 wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | apt-key add -
 apt-add-repository 'deb http://ceph.com/debian-firefly/ trusty main'
 apt-get update && apt-get install ceph ceph-mds -y
+```
+##### 1. Trên ceph-mon:
+Fsid là UUID, được xác định như sau:
+```
+uuidgen
+```
+example:
+```
+uuidgen
+30ca40b1-028d-47f4-8b1e-aa9844880c13
+```
+Tạo configuration file /etc/ceph/ceph.conf.
+```
+[global]
+fsid = 30ca40b1-028d-47f4-8b1e-aa9844880c13
+public_network = 10.2.28.18
+mon initial members = node1, node2, node3
+mon host = 10.2.28.18, 10.2.28.19, 10.2.28.20
+auth cluster required = cephx
+auth service required = cephx
+auth client required = cephx
+osd journal size = 1024
+filestore xattr use omap = true
+; Sets the number of replicas for objects in the pool
+osd pool default size = 2
+osd pool default min size = 1
+;The default number of placement groups for a pool
+osd pool default pg num = 128
+;The default number of placement groups for placement for a pool
+osd pool default pgp num = 128
+osd crush chooseleaf type = 1
+```
+Create a keyring for your cluster and generate a monitor secret key.
+```
+ceph-authtool --create-keyring /tmp/ceph.mon.keyring --gen-key -n mon. --cap mon 'allow *'
+```
+Generate an administrator keyring, generate a client.admin user and add the user to the keyring.
+```
+ceph-authtool --create-keyring /etc/ceph/ceph.client.admin.keyring --gen-key -n client.admin --set-uid=0 --cap mon 'allow *' --cap osd 'allow *' --cap mds 'allow'
+ceph-authtool /tmp/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.admin.keyring
+```
+Generate a monitor map.
+```
+monmaptool --create --add node1 10.2.28.18 --add node2 10.2.28.19 --add node3 10.2.28.20 --fsid 30ca40b1-028d-47f4-8b1e-aa9844880c13 /tmp/monmap
+```
+Distributed config & keyring file to other nodes.
+```
+for file in /etc/ceph/ceph.conf /tmp/ceph.mon.keyring /etc/ceph/ceph.client.admin.keyring /tmp/monmap; do \
+for node in ceph-osd1 ceph-osd2; do scp $file root@$node:$file; done; \
+done;
+```
+##### 2. Thực hiện trên tất cả các nodes.
+Create a default data directory and populate monitor data.
+##### 2.1. Trên ceph-mon.
+```
+mkdir /var/lib/ceph/mon/ceph-mon
+ceph-mon --mkfs -i ceph-mon --monmap /tmp/monmap --keyring /tmp/ceph.mon.keyring
+```
+Start monitor on ceph-mon.
+```
+touch /var/lib/ceph/mon/ceph-mon/sysvinit
+/etc/init.d/ceph start mon.ceph-mon
+```
+Sau đó chúng ta làm tương tự trên các nodes khác.
+**Notes:**Cần điền đúng tên của các nodes trong các dòng lệnh.
+
+##### 2. Verify.
+```
+ceph osd lspools
+    0 data,1 metadata,2 rbd,
+ceph -s
 ```
 
