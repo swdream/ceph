@@ -4,9 +4,9 @@ Mục đích của bài viết là note lại các bước và các vấn đề 
 Mô hình bao gồm một ceph mon và hai ceph OSD.
 ===
 ### 1. Thành phần của mô hình.
-- ** Ceph-mon.**
-Replicate Network: 10.2.28.18 |
+- ** Ceph-mon.**:
+Replicate Network: 10.2.28.18
 Disk:
-- /dev/vdb
-- /dev/vdc
+* /dev/vdb
+* /dev/vdc
 
