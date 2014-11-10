@@ -1,9 +1,10 @@
-Cài đặt mô hình CEPH đơn giản
+Cài  đặt mô hình CEPH đơn giản
 ===============================
 Mục đích của bài viết là note lại các bước và các vấn đề cần chú ý khi cài một mô hình ceph đơn giản.
 Mô hình bao gồm một ceph mon và hai ceph OSD.
 ===
 ### 1. Thành phần của mô hình.
+<img class="image__pic js-image-pic" src="http://prntscr.com/54vcwt" alt="" id="screenshot-image">
 ##### 1.1. **Ceph-mon.**:
 - Replicate Network: 10.2.28.18
 - Disk:
@@ -49,4 +50,21 @@ Mô hình bao gồm một ceph mon và hai ceph OSD.
     Theo default, ceph OSD sẽ coppy data thành 2 bản, đặt trên 2 osd khác
     nhau => hình thành một Active + clean state.
 
+##### 2.3. Ceph-mds:
+    Meta-data server (MDS) là nơi chứa metadata. Các MDSs build các POSIX file
+    system trên top của các object cho các ceph clients. Tuy nhiên, nếu bạn không
+    sử dụng CEPH File System thì bạn không cần một MDS.
+
+### 3. Install:
+Cài đặt Ceph có hai cách chính:
+- cài qua một Ceph-deploy.
+- Cài manual.
+Trong bài viết này, tôi cài manual hệ thống.
+===
+Trên tất cả các nodes:
+```
+wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' | apt-key add -
+apt-add-repository 'deb http://ceph.com/debian-firefly/ trusty main'
+apt-get update && apt-get install ceph ceph-mds -y
+```
 
