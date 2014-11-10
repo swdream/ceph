@@ -6,19 +6,19 @@ Mô hình bao gồm một ceph mon và hai ceph OSD.
 ### 1. Thành phần của mô hình.
 <img class="image__pic js-image-pic" src="http://prntscr.com/54vcwt" alt="" id="screenshot-image">
 ##### 1.1. **Ceph-mon.**:
-- Replicate Network: 10.2.28.18
+- Replicate Network: 10.10.28.18
 - Disk:
     - /dev/vdb
     - /dev/vdc
 
 ##### 1.2. **Ceph-osd1.**:
-- Replicate Network: 10.2.28.19
+- Replicate Network: 10.10.28.19
 - Disk:
     - /dev/vdb
     - /dev/vdc
 
 ##### 1.3. **Ceph-osd2.**:
-- Replicate Network: 10.2.28.20
+- Replicate Network: 10.10.28.20
 - Disk:
     - /dev/vdb
     - /dev/vdc
@@ -82,9 +82,9 @@ Tạo configuration file /etc/ceph/ceph.conf.
 ```
 [global]
 fsid = 30ca40b1-028d-47f4-8b1e-aa9844880c13
-public_network = 10.2.28.18
+public_network = 10.10.28.18
 mon initial members = node1, node2, node3
-mon host = 10.2.28.18, 10.2.28.19, 10.2.28.20
+mon host = 10.10.28.18, 10.2.28.19, 10.2.28.20
 auth cluster required = cephx
 auth service required = cephx
 auth client required = cephx
@@ -110,7 +110,7 @@ ceph-authtool /tmp/ceph.mon.keyring --import-keyring /etc/ceph/ceph.client.admin
 ```
 Generate a monitor map.
 ```
-monmaptool --create --add node1 10.2.28.18 --add node2 10.2.28.19 --add node3 10.2.28.20 --fsid 30ca40b1-028d-47f4-8b1e-aa9844880c13 /tmp/monmap
+monmaptool --create --add node1 10.10.28.18 --add node2 10.2.28.19 --add node3 10.2.28.20 --fsid 30ca40b1-028d-47f4-8b1e-aa9844880c13 /tmp/monmap
 ```
 Distributed config & keyring file to other nodes.
 ```
