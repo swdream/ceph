@@ -68,6 +68,13 @@ wget -q -O- 'https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/release.asc' |
 apt-add-repository 'deb http://ceph.com/debian-firefly/ trusty main'
 apt-get update && apt-get install ceph ceph-mds -y
 ```
+Network:
+Thêm vào file /etc/network/hosts:
+```
+10.10.28.18 ceph-mon
+10.10.28.19 ceph-osd1
+10.10.28.20 ceph-osd2
+```
 ##### 1. Trên ceph-mon:
 Fsid là UUID, được xác định như sau:
 ```
