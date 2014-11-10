@@ -59,8 +59,8 @@ sử dụng CEPH File System thì bạn không cần một MDS.
 Cài đặt Ceph có hai cách chính:
 - cài qua một Ceph-deploy.
 - Cài manual.
-    Trong bài viết này, tôi cài manual hệ thống. Ceph-mon được cài đặt trên Ceph-mon,
-    hai ceph osd caì trên ceph-osd1, ceph-osd2
+Trong bài viết này, tôi cài manual hệ thống. Ceph-mon được cài đặt trên Ceph-mon,
+hai ceph osd caì trên ceph-osd1, ceph-osd2
 ===
 Trên tất cả các nodes:
 ```
